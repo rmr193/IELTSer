@@ -8,7 +8,9 @@ module.exports = async (req, res) => {
     await connectDB();
   } catch (err) {
     console.error('MongoDB connection error:', err);
-    return res.status(500).json({ message: 'Failed to connect to database' });
+    return res.status(500).json({
+      message: err.message || 'Failed to connect to database',
+    });
   }
   return app(req, res);
 };
