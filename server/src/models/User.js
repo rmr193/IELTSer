@@ -11,6 +11,13 @@ const userSchema = new mongoose.Schema(
     targetBand: { type: Number, default: 8, min: 4, max: 9 },
     // "YYYY-MM-DD" (calendar date chosen by the student)
     startDate: { type: String, default: todayKey, match: /^\d{4}-\d{2}-\d{2}$/ },
+    // Email verification fields
+    isVerified: { type: Boolean, default: false },
+    verificationToken: { type: String, select: false },
+    verificationTokenExpires: { type: Date, select: false },
+    // Password reset fields
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
   },
   {
     timestamps: true,
@@ -20,6 +27,10 @@ const userSchema = new mongoose.Schema(
         delete ret._id;
         delete ret.__v;
         delete ret.password;
+        delete ret.verificationToken;
+        delete ret.verificationTokenExpires;
+        delete ret.resetPasswordToken;
+        delete ret.resetPasswordExpires;
         return ret;
       },
     },

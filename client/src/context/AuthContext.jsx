@@ -8,17 +8,31 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(!!getToken());
 
-  useEffect(() => {
-    if (!getToken()) return;
-    api.me()
-      .then((r) => setUser(r.user))
-      .catch(() => setToken(null))
-      .finally(() => setLoading(false));
+  const refreshUser = useCallback(async () => {
+    if (!getToken()) {
+      setUser(null);
+      return null;
+    }
+    try {
+      const r = await api.me();
+      setUser(r.user);
+      return r.user;
+    } catch {
+      setToken(null);
+      setUser(null);
+      return null;
+    }
   }, []);
 
+  useEffect(() => {
+    if (!getToken()) return;
+    refreshUser().finally(() => setLoading(false));
+  }, [refreshUser]);
+
   const authenticate = useCallback((res) => {
-    setToken(res.token);
-    setUser(res.user);
+    if (res.token) setToken(res.token);
+    if (res.user) setUser(res.user);
+    return res;
   }, []);
 
   const login = useCallback(async (body) => authenticate(await api.login(body)), [authenticate]);
@@ -30,11 +44,33 @@ export function AuthProvider({ children }) {
   const updateProfile = useCallback(async (body) => {
     const r = await api.updateMe(body);
     setUser(r.user);
+    return r.user;
   }, []);
 
+  const resendVerification = useCallback(async (email) => {
+    return await api.resendVerification({ email: email || user?.email });
+  }, [user]);
+
+  const verifyEmail = useCallback(async (token) => {
+    const res = await api.verifyEmail({ token });
+    authenticate(res);
+    return res;
+  }, [authenticate]);
+
   const value = useMemo(
-    () => ({ user, loading, login, register, logout, updateProfile }),
-    [user, loading, login, register, logout, updateProfile]
+    () => ({
+      user,
+      loading,
+      login,
+      register,
+      logout,
+      updateProfile,
+      refreshUser,
+      resendVerification,
+      verifyEmail,
+    }),
+    [user, loading, login, register, logout, updateProfile, refreshUser, resendVerification, verifyEmail]
   );
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

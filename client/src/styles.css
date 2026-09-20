@@ -341,3 +341,119 @@ th { color: var(--muted); font-weight: 600; font-size: 0.82rem; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- Verification Banner & Auth Enhancements ---------- */
+.verify-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #fffbf0;
+  border: 1.5px solid #f6d884;
+  color: #724c00;
+  padding: 0.85rem 1.15rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(114, 76, 0, 0.04);
+}
+.verify-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+.verify-banner-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.verify-banner-text {
+  font-size: 0.925rem;
+  line-height: 1.4;
+}
+.verify-banner-text strong {
+  color: #533700;
+}
+.verify-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.btn-sm {
+  padding: 0.42rem 0.85rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+.btn-verify-action {
+  background: #724c00;
+  border-color: #724c00;
+  color: #fff;
+  white-space: nowrap;
+}
+.btn-verify-action:hover {
+  background: #533700;
+  border-color: #533700;
+}
+.verify-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: #926d19;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
+.verify-dismiss-btn:hover {
+  background: rgba(114, 76, 0, 0.1);
+  color: #533700;
+}
+.verify-resend-feedback {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+}
+.field-sublink {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+}
+.text-sm {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.success-msg {
+  color: var(--teal);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  line-height: 1.45;
+}
+
+.auth-verify-view {
+  text-align: left;
+}
+.auth-status-box {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+.auth-status-box.success {
+  background: var(--teal-soft);
+  border-color: #a7dfc9;
+}
+.auth-status-box.error {
+  background: #fff5f5;
+  border-color: #f8c8c5;
+}
+
