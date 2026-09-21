@@ -14,25 +14,29 @@ function Chart({ scores, target }) {
   const line = scores.map((s, i) => `${i ? 'L' : 'M'}${x(i)},${y(Math.max(lo, s.overall))}`).join(' ');
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="chart" role="img" aria-label="Overall band score over time">
-      {[4, 5, 6, 7, 8, 9].map((v) => (
-        <g key={v}>
-          <line x1={P.l} x2={W - P.r} y1={y(v)} y2={y(v)} stroke="var(--line)" />
-          <text x={P.l - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="var(--muted)">{v}</text>
-        </g>
-      ))}
-      <line x1={P.l} x2={W - P.r} y1={y(target)} y2={y(target)} stroke="var(--teal)" strokeDasharray="5 5" />
-      <text x={W - P.r} y={y(target) - 6} textAnchor="end" fontSize="11" fill="var(--teal)">Target {target.toFixed(1)}</text>
-      {scores.length > 1 && <path d={line} fill="none" stroke="var(--ink)" strokeWidth="2.5" />}
-      {scores.map((s, i) => (
-        <g key={s.id}>
-          <circle cx={x(i)} cy={y(Math.max(lo, s.overall))} r="5" fill="var(--highlight)" stroke="var(--ink)" strokeWidth="2" />
-          <text x={x(i)} y={H - 8} textAnchor="middle" fontSize="10" fill="var(--muted)">
-            {new Date(s.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
-          </text>
-        </g>
-      ))}
-    </svg>
+    <div className="chart-container">
+      <div className="chart-scroll-wrap">
+        <svg viewBox={`0 0 ${W} ${H}`} className="chart" role="img" aria-label="Overall band score over time">
+          {[4, 5, 6, 7, 8, 9].map((v) => (
+            <g key={v}>
+              <line x1={P.l} x2={W - P.r} y1={y(v)} y2={y(v)} stroke="var(--line)" />
+              <text x={P.l - 8} y={y(v) + 4} textAnchor="end" fontSize="11" fill="var(--muted)">{v}</text>
+            </g>
+          ))}
+          <line x1={P.l} x2={W - P.r} y1={y(target)} y2={y(target)} stroke="var(--teal)" strokeDasharray="5 5" />
+          <text x={W - P.r} y={y(target) - 6} textAnchor="end" fontSize="11" fill="var(--teal)">Target {target.toFixed(1)}</text>
+          {scores.length > 1 && <path d={line} fill="none" stroke="var(--ink)" strokeWidth="2.5" />}
+          {scores.map((s, i) => (
+            <g key={s.id}>
+              <circle cx={x(i)} cy={y(Math.max(lo, s.overall))} r="5" fill="var(--highlight)" stroke="var(--ink)" strokeWidth="2" />
+              <text x={x(i)} y={H - 8} textAnchor="middle" fontSize="10" fill="var(--muted)">
+                {new Date(s.date + 'T00:00:00').toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
+              </text>
+            </g>
+          ))}
+        </svg>
+      </div>
+    </div>
   );
 }
 
@@ -93,22 +97,24 @@ export default function Scores() {
       <section className="panel">
         <div className="panel-head"><h2>Add a score</h2></div>
         <form className="score-form" onSubmit={submit}>
-          <label className="field">Date<input type="date" value={form.date} onChange={set('date')} required /></label>
-          <label className="field">Type
+          <label className="field date-field">Date<input type="date" value={form.date} onChange={set('date')} required /></label>
+          <label className="field type-field">Type
             <select value={form.type} onChange={set('type')}>
               <option value="mock">Mock test</option>
               <option value="practice">Practice</option>
             </select>
           </label>
-          {PARTS.map((p) => (
-            <label className="field" key={p}>{p[0].toUpperCase() + p.slice(1)}
-              <input type="number" min="0" max="9" step="0.5" inputMode="decimal" value={form[p]} onChange={set(p)} required />
-            </label>
-          ))}
+          <div className="score-skills-grid">
+            {PARTS.map((p) => (
+              <label className="field" key={p}>{p[0].toUpperCase() + p.slice(1)}
+                <input type="number" min="0" max="9" step="0.5" inputMode="decimal" value={form[p]} onChange={set(p)} required />
+              </label>
+            ))}
+          </div>
           <label className="field wide">Note (optional)
             <input value={form.note} onChange={set('note')} maxLength={200} placeholder="For example: Cambridge 17, Test 2" />
           </label>
-          <button className="btn" disabled={busy}>{busy ? 'Saving…' : 'Save score'}</button>
+          <button className="btn btn-block" disabled={busy}>{busy ? 'Saving…' : 'Save score'}</button>
         </form>
         {error && <p className="error" role="alert">{error}</p>}
       </section>

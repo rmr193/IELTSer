@@ -24,6 +24,30 @@ export default function Layout() {
 
   return (
     <div className="shell">
+      {/* Mobile Top Header */}
+      <header className="mobile-topbar" aria-label="Mobile Navigation">
+        <NavLink to="/" className="mobile-brand" aria-label="Go to Dashboard">
+          <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
+          <span className="mobile-brand-title">IELTS 90-Day</span>
+        </NavLink>
+        <NavLink to="/settings" className="mobile-profile-link" title="Open profile & settings" aria-label="Profile and Settings">
+          <span className="mobile-band-badge">Band {Number(user?.targetBand || 8).toFixed(1)}</span>
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={user.name}
+              className="avatar avatar-sm avatar-img"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="avatar avatar-sm" aria-hidden="true">
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+            </div>
+          )}
+        </NavLink>
+      </header>
+
+      {/* Sidebar on Desktop / Bottom Navigation on Mobile */}
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
@@ -88,6 +112,7 @@ export default function Layout() {
           </button>
         </div>
       </aside>
+
       <main className="main" id="main">
         {data.error && (
           <div className="banner" role="alert">
