@@ -35,41 +35,32 @@ export function AuthProvider({ children }) {
     return res;
   }, []);
 
-  const login = useCallback(async (body) => authenticate(await api.login(body)), [authenticate]);
-  const register = useCallback(async (body) => authenticate(await api.register(body)), [authenticate]);
+  const loginWithGoogle = useCallback(
+    async (credential) => authenticate(await api.googleLogin(credential)),
+    [authenticate]
+  );
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
   }, []);
+
   const updateProfile = useCallback(async (body) => {
     const r = await api.updateMe(body);
     setUser(r.user);
     return r.user;
   }, []);
 
-  const resendVerification = useCallback(async (email) => {
-    return await api.resendVerification({ email: email || user?.email });
-  }, [user]);
-
-  const verifyEmail = useCallback(async (token) => {
-    const res = await api.verifyEmail({ token });
-    authenticate(res);
-    return res;
-  }, [authenticate]);
-
   const value = useMemo(
     () => ({
       user,
       loading,
-      login,
-      register,
+      loginWithGoogle,
       logout,
       updateProfile,
       refreshUser,
-      resendVerification,
-      verifyEmail,
     }),
-    [user, loading, login, register, logout, updateProfile, refreshUser, resendVerification, verifyEmail]
+    [user, loading, loginWithGoogle, logout, updateProfile, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

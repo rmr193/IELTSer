@@ -100,6 +100,9 @@ ol, ul { list-style: none; margin: 0; padding: 0; }
   flex-shrink: 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+.avatar-img {
+  object-fit: cover;
+}
 .side-user-text {
   display: flex;
   flex-direction: column;

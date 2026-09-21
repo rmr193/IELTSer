@@ -7,15 +7,16 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true, maxlength: 80 },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true, minlength: 6, select: false },
+    password: { type: String, required: false, minlength: 6, select: false },
+    googleId: { type: String, unique: true, sparse: true },
+    avatar: { type: String },
     targetBand: { type: Number, default: 8, min: 4, max: 9 },
     // "YYYY-MM-DD" (calendar date chosen by the student)
     startDate: { type: String, default: todayKey, match: /^\d{4}-\d{2}-\d{2}$/ },
-    // Email verification fields
-    isVerified: { type: Boolean, default: false },
+    // Google-authenticated accounts are verified by default
+    isVerified: { type: Boolean, default: true },
     verificationToken: { type: String, select: false },
     verificationTokenExpires: { type: Date, select: false },
-    // Password reset fields
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpires: { type: Date, select: false },
   },
@@ -38,12 +39,13 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre('save', async function hashPassword(next) {
-  if (!this.isModified('password')) return next();
+  if (!this.password || !this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
 userSchema.methods.comparePassword = function comparePassword(plain) {
+  if (!this.password) return Promise.resolve(false);
   return bcrypt.compare(plain, this.password);
 };
 

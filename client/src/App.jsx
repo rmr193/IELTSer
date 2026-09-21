@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { Navigate, Route, Routes, useSearchParams } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import { useData } from './context/DataContext.jsx';
 import Layout from './components/Layout.jsx';
@@ -15,33 +14,11 @@ function Splash({ text = 'Loading your plan…', error }) {
 }
 
 export default function App() {
-  const { user, loading, verifyEmail } = useAuth();
+  const { user, loading } = useAuth();
   const data = useData();
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const verifyToken = searchParams.get('verifyToken');
-  const resetToken = searchParams.get('resetToken');
-
-  // If already logged in but clicks verification link, verify in background
-  useEffect(() => {
-    if (user && verifyToken && !user.isVerified) {
-      verifyEmail(verifyToken)
-        .then(() => {
-          searchParams.delete('verifyToken');
-          setSearchParams(searchParams, { replace: true });
-        })
-        .catch((err) => {
-          console.error('Verification failed:', err);
-        });
-    }
-  }, [user, verifyToken, verifyEmail, searchParams, setSearchParams]);
 
   if (loading) return <Splash />;
-
-  // Show Auth view if unauthenticated or if visiting a password reset link
-  if (!user || resetToken || (!user.isVerified && verifyToken)) {
-    return <Auth />;
-  }
+  if (!user) return <Auth />;
 
   return (
     <Routes>

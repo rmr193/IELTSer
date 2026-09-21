@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useData } from '../context/DataContext.jsx';
@@ -10,27 +9,10 @@ const Icon = ({ d }) => (
 );
 
 export default function Layout() {
-  const { user, logout, resendVerification } = useAuth();
+  const { user, logout } = useAuth();
   const data = useData();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
-  const [resendBusy, setResendBusy] = useState(false);
-  const [resendMsg, setResendMsg] = useState('');
-  const [dismissBanner, setDismissBanner] = useState(false);
-
-  const handleResend = async () => {
-    setResendBusy(true);
-    setResendMsg('');
-    try {
-      const res = await resendVerification();
-      setResendMsg(res.message || 'Verification link sent! Check your inbox.');
-    } catch (err) {
-      setResendMsg(err.message || 'Failed to send link. Please try again later.');
-    } finally {
-      setResendBusy(false);
-    }
-  };
 
   const links = [
     { to: '/', label: 'Dashboard', end: true, icon: 'M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10' },
@@ -62,10 +44,21 @@ export default function Layout() {
         </nav>
         <div className="side-user">
           <div className="side-user-profile">
-            <div className="avatar" aria-hidden="true">{user.name.charAt(0).toUpperCase()}</div>
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="avatar avatar-img"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="avatar" aria-hidden="true">
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+            )}
             <div className="side-user-text">
-              <strong title={user.name}>{user.name}</strong>
-              <span>Target band {user.targetBand.toFixed(1)}</span>
+              <strong title={user?.name}>{user?.name}</strong>
+              <span>Target band {Number(user?.targetBand || 8).toFixed(1)}</span>
             </div>
           </div>
           <button
@@ -96,39 +89,6 @@ export default function Layout() {
         </div>
       </aside>
       <main className="main" id="main">
-        {/* Unverified email reminder banner */}
-        {user && !user.isVerified && !dismissBanner && (
-          <div className="verify-banner" role="status">
-            <div className="verify-banner-content">
-              <span className="verify-banner-icon" aria-hidden="true">✉️</span>
-              <div className="verify-banner-text">
-                <strong>Please verify your email address.</strong>
-                <span> We sent a verification link to <em>{user.email}</em>.</span>
-                {resendMsg && <div className="verify-resend-feedback">{resendMsg}</div>}
-              </div>
-            </div>
-            <div className="verify-banner-actions">
-              <button
-                type="button"
-                className="btn btn-sm btn-verify-action"
-                onClick={handleResend}
-                disabled={resendBusy}
-              >
-                {resendBusy ? 'Sending…' : 'Resend Link'}
-              </button>
-              <button
-                type="button"
-                className="verify-dismiss-btn"
-                onClick={() => setDismissBanner(true)}
-                title="Dismiss banner"
-                aria-label="Dismiss banner"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        )}
-
         {data.error && (
           <div className="banner" role="alert">
             <span>{data.error}</span>

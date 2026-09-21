@@ -1,3 +1,6 @@
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 require('dotenv').config();
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -14,6 +17,9 @@ module.exports = {
     ? process.env.CLIENT_ORIGIN.split(',').map((s) => s.trim())
     : true,
   isProd,
+  get GOOGLE_CLIENT_ID() {
+    return process.env.GOOGLE_CLIENT_ID || '';
+  },
   // SMTP Email configuration
   SMTP_HOST: process.env.SMTP_HOST || '',
   SMTP_PORT: parseInt(process.env.SMTP_PORT || '587', 10),

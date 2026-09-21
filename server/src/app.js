@@ -22,13 +22,15 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'https://accounts.google.com'],
+        frameSrc: ["'self'", 'https://accounts.google.com'],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
-        imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'https:'],
+        imgSrc: ["'self'", 'data:', 'https:', 'https://*.googleusercontent.com'],
+        connectSrc: ["'self'", 'https:', 'https://accounts.google.com'],
       },
     },
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
